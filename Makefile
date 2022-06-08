@@ -1,14 +1,20 @@
 install:
 	docker-compose run web rails new . --force --database=mysql --skip-bundle
 	docker-compose run web rm -rf .git
-	docker-compose build
 	cp ./docker/web/database.yml ./myapp/config/
-	docker-compose up -d
+	@make build
 	docker-compose exec web rails db:create
 	@make down
+build:
+	docker-compose build
+	@make upd
+migrate:
+	docker-compose exec web rails db:migrate
 ps:
 	docker-compose ps
 up:
+	docker-compose up
+upd:
 	docker-compose up -d
 down:
 	docker-compose down
