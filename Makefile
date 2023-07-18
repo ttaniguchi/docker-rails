@@ -1,20 +1,14 @@
 install:
-	docker-compose run web rails new . --force --database=mysql --skip-bundle
-	docker-compose run web rm -rf .git
-	cp ./docker/web/database.yml ./myapp/config/
-	@make build
-	docker-compose exec web rails db:create
-	@make down
-build:
+	docker-compose run web rails new . --force --database=postgresql
+	sudo chown -R $USER:$USER .
+	cp ./docker/db/database.yml ./config/
 	docker-compose build
-	@make upd
+init:
+	docker-compose up -d
+	docker-compose run web rake db:create
 migrate:
 	docker-compose exec web rails db:migrate
-ps:
-	docker-compose ps
 up:
-	docker-compose up
-upd:
 	docker-compose up -d
 down:
 	docker-compose down
